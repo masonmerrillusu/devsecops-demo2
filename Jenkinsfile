@@ -12,8 +12,19 @@ pipeline {
             }
         }
         stage('3-4 Tests and static analysis') {
+	    agent{
+		docker{
+		    image 'python:3.12-slim'
+	            reuseNode true
+		}
+            }
             steps {
-                echo 'TODO: create tests and static analysis'
+		sh '''
+		    python -m venv .venv
+		    . .venv/bin/activate
+                    pip install pytest
+                    pytest -v
+                '''
             }
         }
         stage('5-7 Build, image scan, SBOM') {
